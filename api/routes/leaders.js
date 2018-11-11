@@ -1,40 +1,85 @@
+const mongoose = require('mongoose')
 const express = require('express')
 const router = express.Router()
 
-router.get('/', (req, res, next) => {
-    res.status(200).json({
-        message: 'Handling GET request to /leaders'
-    })
-})
+const Leader = require('../models/leader')
 
-router.post('/', (req, res, next) => {
-    res.status(200).json({
-        message: 'Handling POST request to /leaders'
+const handerError = (error, res) => {
+    console.log(error)
+    res.status(500).json({ 
+        data: null,
+        meta: {
+            message: 'Something going wrong',
+            status: 'ERROR',
+            error,
+        }
     })
+}
+
+const defaultMeta = {
+    message: '',
+    status: 'OK'
+}
+
+const notFoundMeta = {
+    message: 'Not Found',
+    status: 'ERROR',
+}
+
+const handleResponse = (response, data, resultCode = 200) => {
+    console.log(data)
+    if (data) {
+        response.status(resultCode).json({
+            data,
+            meta: defaultMeta
+        })
+    } else {
+        response.status(404).json({
+            data: null,
+            meta: notFoundMeta
+        })
+    }
+}
+
+router.get('/', (req, res, next) => {
+    Leader.find()
+        .then(leaders => handleResponse(res, leaders))
+        .catch(error => handerError(error, res))
 })
 
 router.get('/:leaderId', (req, res, next) => {
     const id = req.params.leaderId;
     
-    let message = ''
-    if (id === '42') {
-        message = 'You discovered main answer. It is 42!'
-    } else {
-        message = `You passed an ID`
-    }
-
-    res.status(200).json({
-        message,
-        id, 
-    })
+    Leader.findById(id)
+        .then(leader => handleResponse(res, leader))
+        .catch(error => handerError(error, res))
+    
 })
 
-router.post('/:leaderId', (req, res, next) => {
-    const id = req.params.leaderId;
-
-    res.status(201).json({
-        message: `Leader created with id: ${id}!`
+router.post('/', (req, res, next) => {
+    const { authorName, comment, leaderName, leaderImage } = req.body 
+    const leader = new Leader({
+        _id: mongoose.Types.ObjectId(),
+        leaderName,
+        authorName,
+        comment,
+        leaderImage,
     })
+
+    leader.save()
+        .then(result => handleResponse(res, result, 201))
+        .catch(error => handerError(error, res))
+
 })
+
+router.delete('/:leaderId', (req, res) => {
+    const { leaderId } = req.params
+    Leader.remove({ _id: leaderId })
+        .then(result => handleResponse(res, result))
+        .catch(error => handerError(error, res))
+
+})
+
+
 
 module.exports = router
