@@ -9,6 +9,7 @@ const leadersRoutes = require('./api/routes/leaders')
 mongoose.connect(`mongodb://shiningfinger:${process.env.MONGO_ATLAS_PW}@node-rest-leaders-shard-00-00-pqfcq.mongodb.net:27017,node-rest-leaders-shard-00-01-pqfcq.mongodb.net:27017,node-rest-leaders-shard-00-02-pqfcq.mongodb.net:27017/test?ssl=true&replicaSet=node-rest-leaders-shard-0&authSource=admin&retryWrites=true`, {
     useNewUrlParser: true,
 })
+mongoose.Promise = global.Promise
 
 const app = express();
 
