@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "docker": "docker build -t node-rest-leaders . && docker run --rm -it --init 4080:4080 -v node-rest-leaders",
+    "docker-image": "docker build -t node-rest-leaders"
   },
   "keywords": [],
   "author": "Filipp Zhuravlev",

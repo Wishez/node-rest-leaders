@@ -56,7 +56,7 @@ router.get('/:leaderId', (req, res, next) => {
     
 })
 
-router.post('/', (req, res, next) => {
+router.post('/', (req, res) => {
     const { authorName, comment, leaderName, leaderImage } = req.body 
     const leader = new Leader({
         _id: mongoose.Types.ObjectId(),
