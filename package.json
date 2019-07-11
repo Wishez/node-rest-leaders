@@ -2,12 +2,12 @@
   "name": "node-rest-leaders",
   "version": "1.0.0",
   "description": "Node RestFul application for making leaders.",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "docker": "docker build -t node-rest-leaders . && docker run --rm -it --init 4080:4080 -v node-rest-leaders",
-    "docker-image": "docker build -t node-rest-leaders"
+    "docker": "docker run --rm -it --init -p 4000:4000 node-rest-leaders",
+    "docker-image": "docker build --rm -q -t node-rest-leaders .",
+    "gogo": "npm run docker-image && npm run docker"
   },
   "keywords": [],
   "author": "Filipp Zhuravlev",

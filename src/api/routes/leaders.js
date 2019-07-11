@@ -80,6 +80,4 @@ router.delete('/:leaderId', (req, res) => {
 
 })
 
-
-
 module.exports = router

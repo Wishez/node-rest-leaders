@@ -1,26 +1,19 @@
 # escape=`
 
-# ---- Базовый Node ----
-FROM node:10.13-jessie AS base
-# Создать директорию app
-WORKDIR /app
+FROM node:10.13-jessie
 
-# ---- Зависимости ----
-FROM base AS dependencies  
-# Используется символ подстановки для копирования как package.json, так и package-lock.json
-COPY package*.json ./
-# Установить зависимости приложения, включая предназначенные для разработки ('devDependencies')
-RUN npm i
+MAINTAINER Filipp Zhuravlev <shiningfinger@list.ru>
 
-# --- Выпуск, используя Alpine ----
-FROM node:10.13-alpine AS release  
-# Создать директорию app
-WORKDIR /app
-RUN npm i -g serve nodemon 
-COPY --from=dependencies /app/package.json ./
+WORKDIR /user/src/apps/leaders
+COPY package*.json /user/src/apps/leaders
+COPY ./nodemon.json /user/src/apps/leaders/nodemon.json
+COPY ./src /user/src/apps/leaders
 
-RUN npm i --only=production
-COPY --from=build /app ./
+RUN cd /user/src/apps/leaders && npm i
+RUN npm i -g nodemon 
 
-CMD ["serve", "-s", "dist", "-p", "1080"]
-CMD ["node", "server.js"]
+EXPOSE 3080
+
+ENV SITE_HOST ""
+
+RUN nodemon server.js
